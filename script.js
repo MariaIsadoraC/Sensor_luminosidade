@@ -1,62 +1,25 @@
-const labels = [];
-const dados = [];
+document.addEventListener("DOMContentLoaded", () => {
+    const body = document.body;
+    const lampada = document.getElementById("lampada");
 
-const ctx = document.getElementById("grafico").getContext("2d");
+    // Função para gerar valores aleatórios de luminosidade e alterar os elementos
+    function gerarLuminosidade() {
+        const valor = Math.floor(Math.random() * 1024); // Gera valor entre 0 e 1024
+        console.log(`Luminosidade atual: ${valor}`); // Exibe o valor gerado no console
 
-const grafico = new Chart(ctx, {
-    type: "line",
-    data: {
-        labels: labels,
-        datasets: [{
-            label: "Luminosidade",
-            borderColor: "blue",
-            backgroundColor: "rgba(0,0,255,0.2)",
-            data: dados
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: { display: true, title: { display: true, text: "Tempo" } },
-            y: { 
-                display: true, 
-                title: { display: true, text: "Luminosidade" },
-                suggestedMin: 0,
-                suggestedMax: 1200
-            }
-        },
-        plugins: {
-            beforeDraw: (chart) => {
-                const ctx = chart.ctx;
-                const chartArea = chart.chartArea;
-                ctx.save();
-
-                // Define cor vermelha clara para área abaixo de 1000
-                ctx.fillStyle = "rgba(216, 62, 62, 0.59)";
-                const yThreshold = chart.scales.y.getPixelForValue(1000);
-                ctx.fillRect(chartArea.left, yThreshold, chartArea.right - chartArea.left, chartArea.bottom - yThreshold);
-
-                ctx.restore();
-            }
+        // Alterar o fundo e a imagem da lâmpada com base no valor da luminosidade
+        if (valor > 1000) {
+            console.log("Luminosidade alta: alterando para paisagem clara.");
+            body.style.backgroundImage = "url('imagens/paisagem_clara.webp')"; // Fundo para luminosidade alta
+            lampada.src = "imagens/lampada1.png"; // Lâmpada para luminosidade alta
+        } else {
+            console.log("Luminosidade baixa: alterando para paisagem escura.");
+            body.style.backgroundImage = "url('imagens/paisagem_escura.jpg')"; // Fundo para luminosidade baixa
+            lampada.src = "imagens/lampada2.png"; // Lâmpada para luminosidade baixa
         }
     }
+
+    // Gerar valores a cada 5 segundos
+    setInterval(gerarLuminosidade, 5000);
+    gerarLuminosidade();
 });
-
-// Função para gerar valores aleatórios de luminosidade
-function gerarLuminosidade() {
-    const valor = Math.floor(Math.random() * 1024);
-    labels.push(new Date().toLocaleTimeString());
-    dados.push(valor);
-
-    if (labels.length > 10) {
-        labels.shift();
-        dados.shift();
-    }
-
-    grafico.update();
-}
-
-// Gerar valores a cada 5 segundos
-setInterval(gerarLuminosidade, 5000);
-gerarLuminosidade();
