@@ -1,0 +1,25 @@
+body.style.background-image {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh; /* Garante que o body ocupe pelo menos a altura da tela */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-image 0.5s ease;
+    position: relative; /* Permite posicionar elementos filhos de forma absoluta */
+}
+
+.lampada.src {
+    position: absolute; /* Posiciona o container da lâmpada */
+    top: 50%; /* Alinha verticalmente ao centro */
+    left: 50%; /* Alinha horizontalmente ao centro */
+    transform: translate(-50%, -50%); /* Centraliza o container */
+    text-align: center; /* Centraliza a imagem dentro do container */
+    z-index: 10; /* Garante que a lâmpada fique acima do fundo */
+}
+
+.lampada-container img {
+    width: 150px; /* Tamanho da imagem da lâmpada */
+    transition: opacity 0.5s ease; /* Transição suave ao trocar a imagem */
+}
