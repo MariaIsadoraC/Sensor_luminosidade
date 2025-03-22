@@ -8,13 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(`Luminosidade atual: ${valor}`); // Exibe o valor gerado no console
 
         // Alterar o fundo e a imagem da lâmpada com base no valor da luminosidade
-        if (valor > 1000) {
+        if (valor > 500) {
             console.log("Luminosidade alta: alterando para paisagem clara.");
-            body.style.backgroundImage = "url('imagens/paisagem_clara.webp')"; // Fundo para luminosidade alta
+            document.body.style.backgroundImage = "url('./imagens/paisagem_clara.webp')";
             lampada.src = "imagens/lampada1.png"; // Lâmpada para luminosidade alta
         } else {
             console.log("Luminosidade baixa: alterando para paisagem escura.");
-            body.style.backgroundImage = "url('imagens/paisagem_escura.jpg')"; // Fundo para luminosidade baixa
+            document.body.style.backgroundImage = "url('imagens/paisagem_escura.jpg')"; // Fundo para luminosidade baixa
             lampada.src = "imagens/lampada2.png"; // Lâmpada para luminosidade baixa
         }
     }
