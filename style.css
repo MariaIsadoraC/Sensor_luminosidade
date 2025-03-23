@@ -1,3 +1,40 @@
+header {
+    position: absolute; /* Permite posicionar no topo */
+    top: 10px;
+    left: 0;
+    width: 95%; /* Ocupa toda a largura */
+    display: flex; /* Ativa o layout flexível */
+    justify-content: center; /* Centraliza o título */
+    align-items: center; /* Alinha verticalmente os itens */
+    padding: 15px 20px; /* Espaçamento interno */
+    color: white;
+}
+
+h2 {
+    margin: 0;
+    font-size: 2em;
+    text-align: center;
+    white-space: nowrap; /* Impede que as palavras quebrem */
+}
+
+.botao {
+    display: inline-block;
+    position: absolute;
+    background-color: white;
+    top: 10px;
+    right: 10px; /* Move o botão para a direita */
+    border: none;
+    padding: 5px 5px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.botao:hover {
+    background: lightgray;
+}
+
 body {
     margin: 0;
     padding: 0;

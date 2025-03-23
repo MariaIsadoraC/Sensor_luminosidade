@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dados do ThingSpeak</title>
+    <script>
+        async function fetchData() {
+            const channelID = "2884675"; // Substitua pelo ID do seu canal
+            const apiKey = "UP3ORAHVYJL1L670"; // Substitua pela chave de leitura
+            const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKey}&results=1`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const latestData = data.feeds[0]; // Pega o último dado enviado
+
+                // Exibe os dados na página
+                document.getElementById("luminosidade").innerText = latestData.field1;
+                document.getElementById("timestamp").innerText = latestData.created_at;
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+            }
+        }
+
+        // Atualiza os dados a cada 15 segundos
+        setInterval(fetchData, 15000);
+        window.onload = fetchData; // Busca dados ao carregar a página
+    </script>
+</head>
+<body>
+    <h1>Dados do Sensor de Luminosidade</h1>
+    <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/2884675/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=10&type=line"></iframe>
+    <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/2884675/widgets/1043341"></iframe>
+
+    <p><strong>Luminosidade:</strong> <span id="luminosidade">Carregando...</span></p>
+    <p><strong>Última atualização:</strong> <span id="timestamp">Carregando...</span></p>
+</body>
+</html>
