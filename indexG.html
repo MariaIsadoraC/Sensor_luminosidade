@@ -1,37 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
-    <title>Dados do ThingSpeak</title>
-    <script>
-        async function fetchData() {
-            const channelID = "2884675"; // Substitua pelo ID do seu canal
-            const apiKey = "UP3ORAHVYJL1L670"; // Substitua pela chave de leitura
-            const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKey}&results=1`;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico de Luminosidade</title>
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const latestData = data.feeds[0]; // Pega o último dado enviado
+    <!-- Carregar Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-                // Exibe os dados na página
-                document.getElementById("luminosidade").innerText = latestData.field1;
-                document.getElementById("timestamp").innerText = latestData.created_at;
-            } catch (error) {
-                console.error("Erro ao buscar dados:", error);
-            }
+    <!-- Carregar o Firebase no formato correto (v9+) -->
+    <script type="module">
+        // Importar Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaUVpZ2D4n6hZfisw20GfSFCksZtTD-1s",
+            authDomain: "luminosidade2.firebaseapp.com",
+            databaseURL: "https://luminosidade2-default-rtdb.firebaseio.com",
+            projectId: "luminosidade2",
+            storageBucket: "luminosidade2.appspot.com",
+            messagingSenderId: "285333604111",
+            appId: "1:285333604111:web:13b6f0b25e392d5000a07a"
+        };
+
+        // Inicializar o Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const sensorDataRef = ref(database, 'UsersData/LbrlvsMV4Cdic3doE8ORNoSvnFn1/readings'); // Altere para o seu caminho no Firebase
+
+        // Array para armazenar os dados de luminosidade
+        let luminosity = [];
+
+        // Variável para armazenar a instância do gráfico
+        let myChart;
+
+        // Função para inicializar o gráfico
+        function initChart() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],  // Inicialmente vazio
+                    datasets: [{
+                        label: 'Luminosidade',
+                        data: [],  // Inicialmente vazio
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: {
+                                display: true,
+                                text: 'Índice'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Luminosidade'
+                            }
+                        }
+                    }
+                }
+            });
         }
 
-        // Atualiza os dados a cada 15 segundos
-        setInterval(fetchData, 15000);
-        window.onload = fetchData; // Busca dados ao carregar a página
+        // Função para atualizar o gráfico com o último valor
+        function updateChart(newValue) {
+            if (!myChart) {
+                console.log("Gráfico não inicializado.");
+                return;
+            }
+
+            // Adicionar o novo valor ao gráfico
+            myChart.data.labels.push(myChart.data.labels.length);  // Adiciona o próximo índice
+            myChart.data.datasets[0].data.push(newValue);  // Adiciona o novo valor
+
+            // Atualizar o gráfico
+            myChart.update();
+        }
+
+        // Inicializar o gráfico ao carregar a página
+        initChart();
+
+        // Lendo dados do Firebase
+        onValue(sensorDataRef, (snapshot) => {
+            const data = snapshot.val();
+            luminosity = [];
+
+            if (data) {
+                // Obter o último valor adicionado
+                const lastTimestamp = Object.keys(data).pop();  // Pega a última chave (timestamp)
+                const lastReading = data[lastTimestamp].luminosity;  // Pega o último valor de luminosidade
+
+                console.log("Último valor recebido:", lastReading);
+                updateChart(parseFloat(lastReading));  // Atualiza o gráfico com o último valor
+            } else {
+                console.log("Nenhum dado encontrado no Firebase.");
+            }
+        });
     </script>
 </head>
 <body>
-    <h1>Dados do Sensor de Luminosidade</h1>
-    <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/2884675/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=10&type=line"></iframe>
-    <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/2884675/widgets/1043341"></iframe>
-
-    <p><strong>Luminosidade:</strong> <span id="luminosidade">Carregando...</span></p>
-    <p><strong>Última atualização:</strong> <span id="timestamp">Carregando...</span></p>
+    <h1>Gráfico de Luminosidade</h1>
+    <canvas id="myChart" width="400" height="200"></canvas>
 </body>
 </html>
